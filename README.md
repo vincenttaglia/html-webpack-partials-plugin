@@ -1,4 +1,4 @@
-# Partials for HTML Webpack Plugin
+# Partials for HTML Webpack Plugin for [RST-Element-Prototype](https://github.com/vincenttaglia/RST-Element-Prototype)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -11,13 +11,9 @@ Extends [HTML Webpack Plugin](https://github.com/jantimon/html-webpack-plugin) t
 Relies on `html-webpack-plugin` 4+ (currently at beta)
 
 ## Installation
-```
-yarn add html-webpack-partials-plugin -D
-```
-or
-```
-npm add html-webpack-partials-plugin --save-dev
-```
+You will have to manually install this until these 2 pull requests are accepted:
+1. [Complete Element Replacement Option](https://github.com/colbyfayock/html-webpack-partials-plugin/pull/37)
+2. [Feature: Support for Nested Partials](https://github.com/colbyfayock/html-webpack-partials-plugin/pull/38)
 
 ## Usage
 
@@ -29,12 +25,33 @@ const HtmlWebpackPartialsPlugin = require('html-webpack-partials-plugin');
 Add the plugin to your webpack config as follows:
 ```
 plugins: [
-  new HtmlWebpackPlugin(),
+  new HtmlWebpackPlugin({
+      title: "Index",
+      template: path.join(__dirname, "./src/templates/index.html"),
+      filename: "index.html",
+  }),
   new HtmlWebpackPartialsPlugin({
-    path: './path/to/partials/body.html'
-  })
+      path: path.join(__dirname, './src/partials/desktop-sidebar.html'),
+      location: 'desktop-sidebar',
+      template_filename: "index.html",
+      options: {
+          replaceElement: true,
+          subPartials: [
+              {
+                  path: path.join(__dirname, './src/partials/mobile-sidebar.html'),
+                  location: 'mobile-sidebar',
+                  options: { replaceElement: true },
+              },
+          ]
+      },
+  }),
 ]
 ```
+
+Use replaceElement option to replace template tags instead of being made a child element of said tags.
+
+Use subPartials array option to add a nested partial. You can go as many levels deep as you need.
+
 
 Set up your partial:
 ```
